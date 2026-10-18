@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090909">
+<meta name="robots" content="noindex, nofollow">
+<title>finalstage</title>
+<style>
+  :root { color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: grid; place-items: center;
+    padding: 24px; background: #090909; color: #ededed;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  }
+  main { width: min(100%, 440px); }
+  .label { color: #777; font-size: 11px; letter-spacing: .24em; text-transform: uppercase; }
+  h1 { margin: 12px 0 34px; font-size: clamp(32px, 9vw, 48px); font-weight: 500; letter-spacing: -.06em; }
+  form { display: flex; flex-direction: column; gap: 12px; }
+  label { color: #aaa; font-size: 12px; }
+  input {
+    width: 100%; padding: 14px 13px; background: #111; border: 1px solid #333;
+    border-radius: 3px; color: #f5f5f5; font: inherit; outline: none;
+  }
+  input:focus { border-color: #888; }
+  button {
+    padding: 14px; border: 1px solid #eee; border-radius: 3px;
+    background: #eee; color: #090909; font: inherit; cursor: pointer;
+    transition: background .2s, color .2s;
+  }
+  button:hover { background: #090909; color: #eee; }
+  .error { min-height: 16px; color: #c98c8c; font-size: 12px; }
+  .hidden { display: none !important; }
+  .message { color: #d5d5d5; font-size: clamp(15px, 3.5vw, 18px); line-height: 1.9; white-space: pre-line; }
+  .cursor { display: inline-block; width: 8px; height: 1em; margin-left: 4px; background: #aaa; vertical-align: -2px; animation: blink 1s steps(2, start) infinite; }
+  footer { margin-top: 56px; color: #555; font-size: 10px; letter-spacing: .16em; }
+  @keyframes blink { to { visibility: hidden; } }
+  @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <section id="gate">
+    <div class="label">PERSONAL ARCHIVE / 001</div>
+    <h1>finalstage<span style="color:#666">.</span></h1>
+    <form id="password-form">
+      <label for="password">ENTER PASSWORD TO CONTINUE</label>
+      <input id="password" type="password" placeholder="••••••••" autocomplete="current-password" required autofocus>
+      <button type="submit">UNLOCK →</button>
+      <div class="error" id="error" role="status" aria-live="polite"></div>
+    </form>
+  </section>
+  <section id="reveal" class="hidden" aria-live="polite">
+    <div class="label">ACCESS GRANTED</div>
+    <h1>finalstage<span style="color:#666">.</span></h1>
+    <div class="message" id="message"></div><span class="cursor" id="cursor"></span>
+  </section>
+  <footer>END OF TRANSMISSION</footer>
+</main>
+<script>
+  /*
+   * Set your password below before sharing the site.
+   * IMPORTANT: This is a front-end demo gate, not secure authentication:
+   * anyone who inspects the HTML/JavaScript can discover the password.
+   * For a truly private site, use server-side authentication.
+   */
+  const SITE_PASSWORD = "REJOICE";
+  const secretText = "congrats for\nfinishing gian’s arg, and always have integrity...\nwait";
+  const form = document.getElementById("password-form");
+  const input = document.getElementById("password");
+  const error = document.getElementById("error");
+  const gate = document.getElementById("gate");
+  const reveal = document.getElementById("reveal");
+  const message = document.getElementById("message");
+  const cursor = document.getElementById("cursor");
+
+  form.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (input.value === SITE_PASSWORD) {
+      gate.classList.add("hidden");
+      reveal.classList.remove("hidden");
+      error.textContent = "";
+      let i = 0;
+      const typeNext = () => {
+        if (i < secretText.length) {
+          message.textContent += secretText[i++];
+          window.setTimeout(typeNext, secretText[i - 1] === "\n" ? 380 : 42);
+        } else {
+          cursor.style.display = "none";
+        }
+      };
+      typeNext();
+    } else {
+      error.textContent = "ACCESS DENIED. TRY AGAIN.";
+      input.value = "";
+      input.focus();
+    }
+  });
+</script>
+</body>
+</html>
